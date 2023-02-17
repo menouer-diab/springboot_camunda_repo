@@ -1,0 +1,21 @@
+#spring.datasource.url: jdbc:h2:file:./camunda-h2-database
+
+camunda.bpm.admin-user:
+  id: demo
+  password: demo
+
+spring:
+  datasource:
+    driver-class-name: org.h2.Driver
+    username: camunda
+    password:
+    url: jdbc:h2:tcp://localhost/~/camunda
+  jpa:
+    properties:
+      javax:
+        persistence:
+          schema-generation:
+            scripts:
+              action: create
+              create-target: create.sql
+              create-source: metadata
