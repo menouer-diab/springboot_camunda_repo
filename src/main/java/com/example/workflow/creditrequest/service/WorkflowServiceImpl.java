@@ -1,12 +1,11 @@
-package com.example.workflow.inquiry.service;
+package com.example.workflow.creditrequest.service;
 
-import com.example.workflow.inquiry.model.InquiryEntity;
-import com.example.workflow.inquiry.repository.InquiryRepository;
+import com.example.workflow.creditrequest.model.CreditRequestEntity;
+import com.example.workflow.creditrequest.repository.CreditRequestRepository;
 import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.bpm.engine.TaskService;
 import org.camunda.bpm.engine.runtime.ProcessInstance;
 import org.camunda.bpm.engine.runtime.ProcessInstanceQuery;
-import org.camunda.bpm.engine.runtime.VariableInstance;
 import org.camunda.bpm.engine.task.Task;
 import org.camunda.bpm.engine.task.TaskQuery;
 import org.springframework.stereotype.Service;
@@ -20,13 +19,13 @@ public class WorkflowServiceImpl implements WorkflowService {
     public static final String PROCESS_KEY = "h2camunda-process";
     public static final String BUSINESS_OBJECT_ID = "businessObjectId";
 
-    private final InquiryRepository inquiryRepository;
+    private final CreditRequestRepository inquiryRepository;
 
     private final RuntimeService runtimeService;
 
     private final TaskService taskService;
 
-    public WorkflowServiceImpl(InquiryRepository inquiryRepository, RuntimeService runtimeService, TaskService taskService) {
+    public WorkflowServiceImpl(CreditRequestRepository inquiryRepository, RuntimeService runtimeService, TaskService taskService) {
         this.inquiryRepository = inquiryRepository;
         this.runtimeService = runtimeService;
         this.taskService = taskService;
@@ -41,7 +40,7 @@ public class WorkflowServiceImpl implements WorkflowService {
     }
 
     @Override
-    public void completeInquiryTask(String taskDefKey, InquiryEntity inquiry) {
+    public void completeCreditRequestTask(String taskDefKey, CreditRequestEntity inquiry) {
         TaskQuery taskQuery = taskService.createTaskQuery().processDefinitionKey(PROCESS_KEY).processInstanceBusinessKeyIn(String.valueOf(inquiry.getId())).taskDefinitionKey(taskDefKey);
         Task task = taskQuery.singleResult();
         Boolean ok = inquiry.getAmountInEuros() > 5000 ? Boolean.TRUE : Boolean.FALSE;
@@ -50,7 +49,7 @@ public class WorkflowServiceImpl implements WorkflowService {
     }
 
     @Override
-    public List<Long> getInquiriesBusinessObjectIdsByTaskKey(String taskDefKey) {
+    public List<Long> getCreditRequestIdsByTaskKey(String taskDefKey) {
         List<Task> activeTaskList = findAllActiveTasksByProcessDefKeyAndTaskDefKey(PROCESS_KEY, taskDefKey);
         Set<String> processInstanceIds = getProcessInstanceIds(activeTaskList);
         ProcessInstanceQuery processInstanceQuery = runtimeService.createProcessInstanceQuery().processInstanceIds(processInstanceIds);

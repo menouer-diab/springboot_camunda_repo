@@ -72,15 +72,15 @@
       <bpmn:incoming>Flow_0e7r3jx</bpmn:incoming>
       <bpmn:outgoing>Flow_1ecpifm</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:serviceTask id="Activity_0s8jl0k" name="send approval email to customer" camunda:class="com.example.workflow.inquiry.service.delegates.SendApprovalEmail">
+    <bpmn:serviceTask id="Activity_0s8jl0k" name="send approval email to customer" camunda:class="com.example.workflow.creditrequest.service.delegates.SendApprovalEmail">
       <bpmn:incoming>Flow_1q1b0f9</bpmn:incoming>
       <bpmn:outgoing>Flow_089dor6</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:serviceTask id="Activity_0leiof1" name="send rejection email to customer" camunda:class="com.example.workflow.inquiry.service.delegates.RejectDueToInsolvency">
+    <bpmn:serviceTask id="Activity_0leiof1" name="send rejection email to customer" camunda:class="com.example.workflow.creditrequest.service.delegates.RejectDueToInsolvency">
       <bpmn:incoming>Flow_0g624vi</bpmn:incoming>
       <bpmn:outgoing>Flow_15845jq</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:serviceTask id="Activity_0qspyug" name="send rejection email to customer" camunda:class="com.example.workflow.inquiry.service.delegates.RejectDueToInvalidRequest">
+    <bpmn:serviceTask id="Activity_0qspyug" name="send rejection email to customer" camunda:class="com.example.workflow.creditrequest.service.delegates.RejectDueToInvalidRequest">
       <bpmn:incoming>Flow_1nu1vvx</bpmn:incoming>
       <bpmn:outgoing>Flow_1906ecv</bpmn:outgoing>
     </bpmn:serviceTask>

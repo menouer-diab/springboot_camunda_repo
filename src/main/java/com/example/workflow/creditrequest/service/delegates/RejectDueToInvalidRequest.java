@@ -1,4 +1,4 @@
-package com.example.workflow.inquiry.service.delegates;
+package com.example.workflow.creditrequest.service.delegates;
 
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;

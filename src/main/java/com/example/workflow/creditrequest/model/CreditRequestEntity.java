@@ -1,9 +1,9 @@
-package com.example.workflow.inquiry.model;
+package com.example.workflow.creditrequest.model;
 
 import javax.persistence.*;
 
 @Entity(name="inquiry")
-public class InquiryEntity {
+public class CreditRequestEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -16,7 +16,7 @@ public class InquiryEntity {
 
     @Column(name="status")
     @Enumerated(EnumType.STRING)
-    private InquiryStatusEnum status;
+    private CreditRequestStatusEnum status;
 
     @Column(name="amount_in_euros")
     private Double amountInEuros;
@@ -45,11 +45,11 @@ public class InquiryEntity {
         this.score = score;
     }
 
-    public InquiryStatusEnum getStatus() {
+    public CreditRequestStatusEnum getStatus() {
         return status;
     }
 
-    public void setStatus(InquiryStatusEnum status) {
+    public void setStatus(CreditRequestStatusEnum status) {
         this.status = status;
     }
 
