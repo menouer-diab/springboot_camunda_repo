@@ -1,23 +1,32 @@
 package com.example.workflow.creditrequest.service;
 
 import com.example.workflow.creditrequest.model.CreditRequestEntity;
-import com.example.workflow.creditrequest.model.CreditRequestStatusEnum;
 
 import java.util.List;
 
 public interface CreditRequestService {
 
-    CreditRequestEntity saveCreditRequest(CreditRequestEntity creditRequest);
+    CreditRequestEntity createCreditRequest(CreditRequestEntity creditRequest);
 
-    void changeCreditRequestStatus(CreditRequestEntity creditRequest, CreditRequestStatusEnum newStatus);
+    List<CreditRequestEntity> getCreditRequestsToBeReviewed();
 
-    List<CreditRequestEntity> getClosedCreditRequests();
+    List<CreditRequestEntity> getCreditRequestsRequiringCustomerSolvencyCheck();
 
-    List<CreditRequestEntity> getAllCreditRequests();
+    List<CreditRequestEntity> getCreditRequestsRequiringMoneyTransfer();
 
-    CreditRequestEntity getCreditRequestById(Long creditRequestId);
+    List<CreditRequestEntity> getCreditRequestsToBeArchived();
 
-    List<CreditRequestEntity> findCreditRequestsByIds(List<Long> creditRequestsIds);
+    List<CreditRequestEntity> getNonValidCreditRequests();
 
-    void updateStatus(CreditRequestEntity creditRequest, CreditRequestStatusEnum requestChecked);
+    List<CreditRequestEntity> getCreditRequestsRejectedDueToCustomerSolvency();
+
+    List<CreditRequestEntity> getApprovedCreditRequests();
+
+    void completeCreditRequestReviewTask(Long creditRequestId, String decision);
+
+    void completeCreditRequestMoneyTransferTask(Long creditRequestId);
+
+    void completeCreditRequestArchivingTask(Long creditRequestId);
+
+    void completeCreditRequestSolvencyCheckTask(Long creditRequestId, String decision);
 }

@@ -1,65 +1,97 @@
 package com.example.workflow.creditrequest.api;
 
 import com.example.workflow.creditrequest.model.CreditRequestEntity;
-import com.example.workflow.creditrequest.model.CreditRequestStatusEnum;
 import com.example.workflow.creditrequest.service.CreditRequestService;
-import com.example.workflow.creditrequest.service.WorkflowService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping(path = "/creditrequest")
+@RequestMapping(path = "/credit-requests")
 public class CreditRequestController {
 
     private final CreditRequestService creditRequestService;
 
-    private final WorkflowService workflowService;
-
-    public CreditRequestController(CreditRequestService creditRequestService, WorkflowService workflowService) {
+    public CreditRequestController(CreditRequestService creditRequestService) {
         this.creditRequestService = creditRequestService;
-        this.workflowService = workflowService;
     }
 
     @PostMapping(path = "", consumes = "application/json", produces = "application/json")
     public CreditRequestEntity createCreditRequest(@RequestBody CreditRequestEntity creditRequest) {
-        return creditRequestService.saveCreditRequest(creditRequest);
+        return creditRequestService.createCreditRequest(creditRequest);
     }
 
-    @PostMapping(path = "/start-inquiry-process/{creditRequestId}", produces = "text/plain")
-    public String startCreditRequestProcessInstance(@PathVariable("creditRequestId") Long creditRequestId) {
-        String processInstanceId = workflowService.startProcessInstanceByKey(creditRequestId);
-        return String.format("Process Instance with Id: %s created successfully for creditrequest with id: %d", processInstanceId, creditRequestId);
+    // Methods delivering credit Requests to be processed.
+
+    @GetMapping(path = "/to-be-checked", produces = "application/json")
+    public List<CreditRequestEntity> getCreditRequestsToBeReviewed() {
+        // List<Long> creditRequestIds = workflowService.getCreditRequestIdsByTaskKey(taskDefinitionKey);
+        return creditRequestService.getCreditRequestsToBeReviewed();
     }
 
-    /*
-     * Method to find all the user tasks defined with a given key and waiting for completion.
-     * @param taskKey
-     * The task definition key
-     * @return List of Inquiries by task definition key
-     */
-    @GetMapping(path = "/{taskDefKey}", produces = "application/json")
-    public List<CreditRequestEntity> getCreditRequestsByTaskKey(@PathVariable("taskDefKey") String taskDefinitionKey) {
-        List<Long> creditRequestIds = workflowService.getCreditRequestIdsByTaskKey(taskDefinitionKey);
-        return creditRequestService.findCreditRequestsByIds(creditRequestIds);
+    @GetMapping(path = "/customer-solvency-check", produces = "application/json")
+    public List<CreditRequestEntity> getCreditRequestsRequiringCustomerSolvencyCheck() {
+        return creditRequestService.getCreditRequestsRequiringCustomerSolvencyCheck();
     }
 
-    @GetMapping(path = "", produces = "application/json")
-    public List<CreditRequestEntity> getAllCreditRequests() {
-        return creditRequestService.getAllCreditRequests();
+    @GetMapping(path = "/???", produces = "application/json")
+    public List<CreditRequestEntity> getCreditRequestsRequiringMoneyTransfer() {
+        return creditRequestService.getCreditRequestsRequiringMoneyTransfer();
     }
 
-    @PostMapping(path = "/complete-task/{creditRequestId}", produces = "text/plain")
-    public String completeCreditRequestTask(@PathVariable Long creditRequestId, @RequestParam("taskDefKey") String taskDefKey) {
-        CreditRequestEntity creditRequest = creditRequestService.getCreditRequestById(creditRequestId);
-        workflowService.completeCreditRequestTask(taskDefKey, creditRequest);
-        creditRequestService.updateStatus(creditRequest, CreditRequestStatusEnum.REQUEST_CHECKED);
-        return String.format("Task with key: %s for credit request with Id: %d completed!", taskDefKey, creditRequestId);
+    @GetMapping(path = "/???", produces = "application/json")
+    public List<CreditRequestEntity> getCreditRequestsToBeArchived() {
+        return creditRequestService.getCreditRequestsToBeArchived();
     }
 
-    @GetMapping(path = "/closed-inquiries", produces = "application/json")
-    public List<CreditRequestEntity> getClosedCreditRequests() {
-        return creditRequestService.getClosedCreditRequests();
+    @GetMapping(path = "/???", produces = "application/json")
+    public List<CreditRequestEntity> getNonValidCreditRequests() {
+        return creditRequestService.getNonValidCreditRequests();
+    }
+
+    @GetMapping(path = "/???", produces = "application/json")
+    public List<CreditRequestEntity> getCreditRequestsRejectedDueToCustomerSolvency() {
+        return creditRequestService.getCreditRequestsRejectedDueToCustomerSolvency();
+    }
+
+    @GetMapping(path = "/???", produces = "application/json")
+    public List<CreditRequestEntity> getApprovedCreditRequests() {
+        return creditRequestService.getApprovedCreditRequests();
+    }
+
+    // Methods for tasks execution
+    @PatchMapping(path = "/{creditRequestId}/{decision}", produces = "application/json")
+    public ResponseEntity<String> completeCreditRequestReviewTask(@PathVariable Long creditRequestId, @PathVariable String decision) {
+        creditRequestService.completeCreditRequestReviewTask(creditRequestId, decision);
+        return new ResponseEntity<>(
+                String.format("Credit request with Id: %d has been reviewed. The check decision was %s", creditRequestId, decision),
+                HttpStatus.OK);
+    }
+
+    @PatchMapping(path = "/{creditRequestId}/{decision}", produces = "application/json")
+    public ResponseEntity<String> completeCreditRequestSolvencyCheckTask(@PathVariable Long creditRequestId) {
+        creditRequestService.completeCreditRequestSolvencyCheckTask(creditRequestId);
+        return new ResponseEntity<>(
+                String.format("Money has been transfered to customer of the credit request with Id: %d .", creditRequestId),
+                HttpStatus.OK);
+    }
+
+    @PatchMapping(path = "/{creditRequestId}/{decision}", produces = "application/json")
+    public ResponseEntity<String> completeCreditRequestMoneyTransferTask(@PathVariable Long creditRequestId) {
+        creditRequestService.completeCreditRequestMoneyTransferTask(creditRequestId);
+        return new ResponseEntity<>(
+                String.format("Money has been transfered to customer of the credit request with Id: %d .", creditRequestId),
+                HttpStatus.OK);
+    }
+
+    @PatchMapping(path = "/{creditRequestId}", produces = "application/json")
+    public ResponseEntity<String> completeCreditRequestArchivingTask(@PathVariable Long creditRequestId) {
+        creditRequestService.completeCreditRequestArchivingTask(creditRequestId);
+        return new ResponseEntity<>(
+                String.format("Credit request with Id: %d has been archived", creditRequestId),
+                HttpStatus.OK);
     }
 
 }

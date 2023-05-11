@@ -1,5 +1,7 @@
 package com.example.workflow.creditrequest.model;
 
+import com.example.workflow.creditrequest.workflow.CreditRequestStatusEnum;
+
 import javax.persistence.*;
 
 @Entity(name="inquiry")
@@ -13,10 +15,6 @@ public class CreditRequestEntity {
 
     @Column(name="score")
     private Integer score;
-
-    @Column(name="status")
-    @Enumerated(EnumType.STRING)
-    private CreditRequestStatusEnum status;
 
     @Column(name="amount_in_euros")
     private Double amountInEuros;
@@ -43,14 +41,6 @@ public class CreditRequestEntity {
 
     public void setScore(Integer score) {
         this.score = score;
-    }
-
-    public CreditRequestStatusEnum getStatus() {
-        return status;
-    }
-
-    public void setStatus(CreditRequestStatusEnum status) {
-        this.status = status;
     }
 
     public Double getAmountInEuros() {
